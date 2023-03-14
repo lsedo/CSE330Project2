@@ -10,13 +10,4 @@
 #include <linux/time.h>
 #include <linux/timer.h>
 #include <linux/slab.h>
-
-int producer_consumer_init(void){
-}
-
-void producer_consumer_exit(void){
-}
-
-module_init(producer_consumer_init);
-module_exit(producer_consumer_exit);
-MODULE_LICENSE("GPL");
+#include <linux/stdio.h>
