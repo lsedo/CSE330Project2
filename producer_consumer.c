@@ -7,13 +7,15 @@
 #include <linux/init.h>
 #include <linux/proc_fs.h>
 #include <linux/ktime.h>
-#include <linux/time.h>
-#include <linux/timer.h>
+#include <linux/timekeeping.h>
 #include <linux/slab.h>
 #include <linux/stdio.h>
 
+// typedef unsigned 64 bits for timekeeping
+typedef unsigned long u64;
+
 //Create 4 required module parameters
-int buffSize, prod, cons, uuid;
+static int buffSize = 5, prod = 1, cons = 1, uuid;
 module_param(buffSize,int,0644);
 module_param(prod,int,0644);
 module_param(cons,int,0644);
@@ -23,6 +25,15 @@ module_param(uuid,int,0644);
 struct semaphore mutex;
 struct semaphore full;
 struct semaphore empty;
+
+// task_struct pointers
+struct task_struct **buffer = NULL;
+struct task_struct **consumer_list = NULL;
+struct task_struct *producer_thread = NULL;
+
+// Timer and counter to measure the consumer time
+static u64 total_time = 0;
+static int consumer_count = 0;
 
 int producer_consumer_init(void){
   //Initialize semaphores
