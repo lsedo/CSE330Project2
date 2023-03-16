@@ -37,11 +37,28 @@ static int consumer_count = 0;
 
 // Producer thread
 int producer_func(void *args) {
+  struct task_struct task;
+  for_each_process(task){
+    if(task->cred->uid.val == uuid){
+      // Wait on empty
+      // Wait on mutex
+      // Produce Item- add to buffer
+      // Signal mutex
+      // Signal full
+    }
+  }
   return 0;
 }
 
 // Consumer thread
 int consumer_func(void *args) {
+  while(!kthread_should_stop()){
+    // Wait on full
+    // Wait on mutex
+    // Consume Item- remove from buffer
+    // Signal mutex
+    // Signal empty
+  }
   return 0;
 }
 
@@ -50,6 +67,14 @@ int producer_consumer_init(void){
   sema_init(&mutex,0);
   sema_init(&full,0);
   sema_init(&empty,buffSize);
+  
+  struct task_struct *ts_prod;
+  struct task_struct *ts_cons;
+  // If parameter is 0 do not create a thread
+  if(prod != 0)
+    ts_prod = kthread_run(producer,NULL,"producer_thread");
+  if(cons != 0)
+    ts_cons = kthread_run(consumer,NULL,"consumer_thread");
   
   return 0;
 }
