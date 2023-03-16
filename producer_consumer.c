@@ -35,10 +35,12 @@ struct task_struct *producer_thread = NULL;
 static u64 total_time = 0;
 static int consumer_count = 0;
 
+// Producer thread
 int producer_func(void *args) {
   return 0;
 }
 
+// Consumer thread
 int consumer_func(void *args) {
   return 0;
 }
