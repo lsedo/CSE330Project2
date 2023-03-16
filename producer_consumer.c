@@ -35,14 +35,29 @@ struct task_struct *producer_thread = NULL;
 static u64 total_time = 0;
 static int consumer_count = 0;
 
+int producer_func(void *args) {
+  return 0;
+}
+
+int consumer_func(void *args) {
+  return 0;
+}
+
 int producer_consumer_init(void){
   //Initialize semaphores
   sema_init(&mutex,0);
   sema_init(&full,0);
   sema_init(&empty,buffSize);
+  
+  return 0;
 }
 
 void producer_consumer_exit(void){
+  
+  // Variables for runtime calculation
+  u64 seconds = 0, minutes = 0, hours = 0;
+  int count 0;
+  
   //End Stuff
 }
 
