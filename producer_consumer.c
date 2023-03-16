@@ -41,10 +41,14 @@ int producer_func(void *args) {
   for_each_process(task){
     if(task->cred->uid.val == uuid){
       // Wait on empty
+      down_interruptible(&empty);
       // Wait on mutex
+      down_interruptible(&mutex);
       // Produce Item- add to buffer
       // Signal mutex
+      up(&mutex);
       // Signal full
+      up(&full);
     }
   }
   return 0;
@@ -67,15 +71,11 @@ int producer_consumer_init(void){
   sema_init(&mutex,0);
   sema_init(&full,0);
   sema_init(&empty,buffSize);
-  
-  struct task_struct *ts_prod;
-  struct task_struct *ts_cons;
+
   // If parameter is 0 do not create a thread
   if(prod != 0)
-    ts_prod = kthread_run(producer,NULL,"producer_thread");
-  if(cons != 0)
-    ts_cons = kthread_run(consumer,NULL,"consumer_thread");
-  
+    producer_thread = kthread_run(producer_func,NULL,"Producer");
+ 
   return 0;
 }
 
