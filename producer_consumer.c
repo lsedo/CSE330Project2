@@ -35,11 +35,49 @@ struct task_struct *producer_thread = NULL;
 static u64 total_time = 0;
 static int consumer_count = 0;
 
+// Function for producer thread
+static int producer(void *arg){
+  struct task_struct task;
+  for_each_process(task){
+    if(task->cred->uid.val == uuid){
+      // Wait on empty
+      // Wait fon mutex
+      // Produce Item- Add to buffer
+      // Signal mutex
+      // Signal full
+    }
+  }
+  return 0;
+}
+
+// Function for conusmer thread
+static int consumer(void *arg){
+  while(!kthread_should_stop()){
+    // Wait on full
+    // Wait on mutex
+    // Consume Item- Remove from buffer
+    // Signal mutex
+    // Signal empty
+  }
+  return 0;
+}
+
 int producer_consumer_init(void){
   //Initialize semaphores
   sema_init(&mutex,0);
   sema_init(&full,0);
   sema_init(&empty,buffSize);
+  
+  struct task_struct *ts_prod;
+  struct task_struct *ts_cons;
+  
+  // If either prod or cons is 0 do not create a thread
+  if(prod != 0)
+    ts_prod = kthread_run(producer,NULL,"producer_thread");
+  if(cons != 0)
+    ts_cons = kthread_run(consumer,NULL,"consumer_thread");
+  
+  return 0;
 }
 
 void producer_consumer_exit(void){
