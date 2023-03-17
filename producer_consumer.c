@@ -66,19 +66,58 @@ int consumer_func(void *args) {
   return 0;
 }
 
+// The initial module
 int producer_consumer_init(void){
-  //Initialize semaphores
-  sema_init(&mutex,0);
-  sema_init(&full,0);
-  sema_init(&empty,buffSize);
 
+  // Counter variable
+  int i = 0
+  
+  // Parameter validation
+  if ((prod != 0 && prod != 1) || cons < 0 || buffSize < 1) return -1;
+  
+  //Initialize semaphores
+  sema_init(&empty,buffSize);
+  sema_init(&mutex,1);
+  sema_init(&full,0);
+
+  // Buffer initialization
+  buffer = (struct task_struck**)kmalloc(sizeof(struct task_struct*) * buffSize, GFP_KERNEL);
+  while (i < buffSize) {
+          buffer[i] = NULL;
+          ++i;
+  }
+  
+  // consumerList initialization
+  if (cons > 0) {
+          i = 0;
+          consumerList = (struct task_struct**)kmalloc(sizeof(struct task_struct*) * cons, GFP_KERNEL);
+          while (i < cons) {
+                consumerList[i] = NULL;
+                ++i;
+          }
+  }
+  
+  // The producer_thread will be only created if prod = 1
+  if (prod == 1)
+          producer_thread = kthread_run(producer_func, NULL, "producer_thread");
+  
   // If parameter is 0 do not create a thread
   if(prod != 0)
     producer_thread = kthread_run(producer_func,NULL,"Producer");
  
+  // Create consumer threads
+  if (cons > 0) {
+          i = 0;
+          while (i < cons){
+                  consumerList[i] = kthread_run(consumer_func, NULL, "consumer_thread");
+                  ++i;
+          }
+  }
+  
   return 0;
 }
 
+// The exit module
 void producer_consumer_exit(void){
   
   // Variables for runtime calculation
