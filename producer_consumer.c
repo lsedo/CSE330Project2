@@ -96,7 +96,7 @@ static int consumer_func(void *args) {
 int producer_consumer_init(void) {
 
   // Counter variable
-  int i = 0
+  int i = 0;
   
   // Parameter validation
   if ((prod != 0 && prod != 1) || cons < 0 || buffSize < 1) {
@@ -112,7 +112,7 @@ int producer_consumer_init(void) {
   sema_init(&full,0);
 
   // Buffer initialization
-  buffer = (struct task_struck**)kmalloc(sizeof(struct task_struct*) * buffSize, GFP_KERNEL);
+  buffer = (struct task_struct**)kmalloc(sizeof(struct task_struct*) * buffSize, GFP_KERNEL);
   
   while (i < buffSize) {
           buffer[i] = NULL;
