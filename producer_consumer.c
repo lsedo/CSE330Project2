@@ -30,7 +30,7 @@ struct task_struct **consumer_list = NULL;
 struct task_struct *producer_thread = NULL;
 
 // Timer and counter to measure the consumer time
-static u64 total_time = 0;
+static u64 total_runtime = 0;
 static int consumer_count = 0;
 
 // Producer thread
