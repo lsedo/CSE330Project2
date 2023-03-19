@@ -22,9 +22,7 @@ module_param(cons, int, 0644);
 module_param(uuid, int, 0644);
 
 //Create required semaphores
-struct semaphore mutex;
-struct semaphore full;
-struct semaphore empty;
+static struct semaphore mutex, full, empty;
 
 // task_struct pointers
 struct task_struct **buffer = NULL;
