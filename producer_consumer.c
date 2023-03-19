@@ -160,7 +160,7 @@ void producer_consumer_exit(void) {
   
   // Variables for runtime calculation
   ul_64 seconds = 0, minutes = 0, hours = 0;
-  int count 0;
+  int count = 0;
   
   // Calculate total runtime
   /*
