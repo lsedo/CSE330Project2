@@ -170,6 +170,16 @@ void producer_consumer_exit(void) {
   u64 seconds = 0, minutes = 0, hours = 0;
   int count 0;
   
+  // Calculate total runtime
+  /*
+  seconds = 0; minutes = 0; hours = 0;
+  seconds = total_runtime / 1000000000;
+  minutes = seconds / 60;
+  seconds = seconds % 60;
+  hours = minutes / 60;
+  minutes = minutes % 60;
+  */
+  
   //End Stuff
   
 }
