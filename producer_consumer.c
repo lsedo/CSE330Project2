@@ -11,7 +11,7 @@
 #include <linux/slab.h>
 
 // typedef unsigned 64 bits for timekeeping
-typedef unsigned long u64;
+typedef unsigned long ul_64;
 
 //Create 4 required module parameters
 static int buffSize = 5, prod = 1, cons = 1, uuid = 1000;
@@ -29,12 +29,12 @@ struct task_struct **consumer_list = NULL;
 struct task_struct *producer_thread = NULL;
 
 // Timer and counter to measure the consumer time
-static u64 total_runtime = 0;
+static ul_64 total_runtime = 0;
 static int consumer_count = 0;
 
 // Producer thread
 static int producer_func(void *args) {
-  struct task_struct task;
+  struct task_struct *task;
   
   for_each_process(task) {
     
@@ -124,10 +124,10 @@ int producer_consumer_init(void) {
   if (cons > 0) {
     
           i = 0;
-          consumerList = (struct task_struct**)kmalloc(sizeof(struct task_struct*) * cons, GFP_KERNEL);
+          consumer_list = (struct task_struct**)kmalloc(sizeof(struct task_struct*) * cons, GFP_KERNEL);
     
           while (i < cons) {
-                consumerList[i] = NULL;
+                consumer_list[i] = NULL;
                 ++i;
           }
   }
@@ -145,7 +145,7 @@ int producer_consumer_init(void) {
           i = 0;
     
           while (i < cons) {
-                  consumerList[i] = kthread_run(consumer_func, NULL, "consumer_thread");
+                  consumer_list[i] = kthread_run(consumer_func, NULL, "consumer_thread");
                   ++i;
           }
   }
@@ -159,7 +159,7 @@ int producer_consumer_init(void) {
 void producer_consumer_exit(void) {
   
   // Variables for runtime calculation
-  u64 seconds = 0, minutes = 0, hours = 0;
+  ul_64 seconds = 0, minutes = 0, hours = 0;
   int count 0;
   
   // Calculate total runtime
