@@ -1,5 +1,5 @@
 
-CSE330 - JSTL
+CSE330 - TELS
 
 Ellis Totman - 1217927594
 Lazo Sedor
