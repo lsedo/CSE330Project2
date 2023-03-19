@@ -15,7 +15,7 @@
 typedef unsigned long u64;
 
 //Create 4 required module parameters
-static int buffSize = 5, prod = 1, cons = 1, uuid;
+static int buffSize = 5, prod = 1, cons = 1, uuid = 1000;
 module_param(buffSize, int, 0644);
 module_param(prod, int, 0644);
 module_param(cons, int, 0644);
