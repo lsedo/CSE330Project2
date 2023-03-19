@@ -36,7 +36,7 @@ static u64 total_time = 0;
 static int consumer_count = 0;
 
 // Producer thread
-int producer_func(void *args) {
+static int producer_func(void *args) {
   struct task_struct task;
   for_each_process(task){
     if(task->cred->uid.val == uuid){
@@ -55,7 +55,7 @@ int producer_func(void *args) {
 }
 
 // Consumer thread
-int consumer_func(void *args) {
+static int consumer_func(void *args) {
   while(!kthread_should_stop()){
     // Wait on full
     // Wait on mutex
