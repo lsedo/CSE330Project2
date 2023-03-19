@@ -9,7 +9,6 @@
 #include <linux/ktime.h>
 #include <linux/timekeeping.h>
 #include <linux/slab.h>
-#include <linux/stdio.h>
 
 // typedef unsigned 64 bits for timekeeping
 typedef unsigned long u64;
