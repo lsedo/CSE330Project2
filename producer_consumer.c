@@ -141,13 +141,6 @@ int producer_consumer_init(void) {
     
   }
   
-  // If parameter is 0 do not create a thread
-  if (prod != 0) {
-    
-    producer_thread = kthread_run(producer_func,NULL,"Producer");
- 
-  }
-  
   // Create consumer threads
   if (cons > 0) {
           i = 0;
