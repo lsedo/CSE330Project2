@@ -37,7 +37,7 @@ static int consumer_count = 0;
 // Count the number of items produced
 static int producer_count = 0;
 
-// Producer thread
+// Producer thread - finite loop
 static int producer_func(void *args) {
   struct task_struct *task;
   
@@ -76,7 +76,7 @@ static int producer_func(void *args) {
 }
 
 
-// Consumer thread
+// Consumer thread - infinite loop
 static int consumer_func(void *args) {
   
   // Variables for the thread
@@ -114,6 +114,7 @@ static int consumer_func(void *args) {
                     seconds = seconds % 60;
                     hours = minutes / 60;
                     minutes = minutes % 60;
+              // print out total time in given format
                     printk("[%s] Consumed Item#-%d on buffer index:%d PID:%d Elapsed Time-%d:%d:%d\n",current->comm,consumer_count,buffer_ix,current->pid,hours,minutes,seconds);
                     break;
              }
@@ -147,7 +148,7 @@ int producer_consumer_init(void) {
   }
   
   
-  //Initialize semaphores
+  // Initialize semaphores
   sema_init(&empty,buffSize);
   sema_init(&mutex,1);
   sema_init(&full,0);
