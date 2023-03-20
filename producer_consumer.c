@@ -59,7 +59,8 @@ static int producer_func(void *args) {
       buffer[buffer_ix] = task;
       printk("[%s] Produced Item#-%d at buffer index:%d for PID:%d\n",current->comm,producer_count,buffer_ix,current->pid);
       ++producer_count;
-      ++buffer_ix
+      ++buffer_ix;
+      
       // Signal mutex (Release semaphore lock)
       up(&mutex); 
       
