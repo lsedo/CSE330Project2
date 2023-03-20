@@ -47,12 +47,12 @@ static int producer_func(void *args) {
       
       // Wait on empty (Acquire semaphore lock)
       if (down_interruptible(&empty)) {
-              do_exit(-1);     
+              break;     
       }
       
       // Wait on mutex (Acquire semaphore lock)
       if (down_interruptible(&mutex)) {
-              do_exit(-1);
+              break;
       }
       
       // Produce Item- add to buffer
@@ -97,12 +97,12 @@ static int consumer_func(void *args) {
     
     // Wait on full (Acquire semaphore lock)
     if (down_interruptible(&full)) {
-            do_exit(-1);
+            break;
     }
     
     // Wait on mutex (Acquire semaphore lock)
     if (down_interruptible(&mutex)) {
-            do_exit(-1);
+            break;
     }
     
     buffer_ix = 0;
