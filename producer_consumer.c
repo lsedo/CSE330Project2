@@ -23,6 +23,8 @@ module_param(uuid, int, 0644);
 //Create required semaphores
 static struct semaphore mutex, full, empty;
 
+static int buffer_ix;
+
 // task_struct pointers
 struct task_struct **buffer = NULL;
 struct task_struct **consumer_list = NULL;
@@ -54,10 +56,10 @@ static int producer_func(void *args) {
       }
       
       // Produce Item- add to buffer
-      buffer[full] = task;
-      printk("[%s] Produced Item#-%d at buffer index:%d for PID:%d\n",current->comm,producer_count,full,current->pid);
+      buffer[buffer_ix] = task;
+      printk("[%s] Produced Item#-%d at buffer index:%d for PID:%d\n",current->comm,producer_count,buffer_ix,current->pid);
       ++producer_count;
-      
+      ++buffer_ix
       // Signal mutex (Release semaphore lock)
       up(&mutex); 
       
@@ -95,8 +97,8 @@ static int consumer_func(void *args) {
     }
     
     // Consume Item- remove from buffer
-    c = buffer[full];
-    buffer[full] = NULL;
+    c = buffer[buffer_ix];
+    buffer[buffer_ix] = NULL;
     
     // Calculate elapsed time of process
     time = c->start_time - ktime_get-ns();
@@ -107,10 +109,10 @@ static int consumer_func(void *args) {
     hours = minutes / 60;
     minutes = minutes % 60;
     
-    printk("[%s] Consumed Item#-%d on buffer index:%d PID:%d Elapsed Time-%d:%d:%d\n",current->comm,consumer_count,full,current->pid,hours,minutes,seconds);
+    printk("[%s] Consumed Item#-%d on buffer index:%d PID:%d Elapsed Time-%d:%d:%d\n",current->comm,consumer_count,buffer_ix,current->pid,hours,minutes,seconds);
     index = 0;
     ++conumer_count;
-    
+    --buffer_ix
     // Signal mutex (Release semaphore lock)
     up(&mutex);
     
@@ -129,6 +131,7 @@ int producer_consumer_init(void) {
 
   // Counter variable
   int i = 0;
+  buffer_ix = 0;
   
   // Parameter validation
   if ((prod != 0 && prod != 1) || cons < 0 || buffSize < 1) {
