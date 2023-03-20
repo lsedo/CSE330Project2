@@ -241,27 +241,7 @@ void producer_consumer_exit(void) {
         kthread_stop(producer_list[i]);
   
   }
-  
-  // kfree() for the universal pointers
-  
-  if (buffer != NULL) {
     
-    kfree(buffer);
-    
-  }
-  
-  if (producer_list != NULL) {
-    
-    kfree(producer_list);
-  
-  }
-  
-  if (consumer_list != NULL) {
-    
-    kfree(consumer_list);
-  
-  }
-  
   // Calculate total runtime
   seconds = 0; minutes = 0; hours = 0;
   seconds = total_runtime / 1000000000;
@@ -272,6 +252,24 @@ void producer_consumer_exit(void) {
   
   printk("The total elapsed time of all processes for UID %d is \t%d:%d:%d\n",uuid,hours,minutes,seconds);
   
+  // kfree() for the universal pointers
+  if (buffer != NULL) {
+    
+    kfree(buffer);
+    buffer = NULL;
+  }
+  
+  if (producer_list != NULL) {
+    
+    kfree(producer_list);
+    producer_list = NULL;
+  }
+  
+  if (consumer_list != NULL) {
+    
+    kfree(consumer_list);
+    consumer_list = NULL;
+  }
 }
 
 module_init(producer_consumer_init);
