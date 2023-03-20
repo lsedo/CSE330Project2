@@ -244,9 +244,23 @@ void producer_consumer_exit(void) {
   
   // kfree() for the universal pointers
   
-  kfree(buffer);
-  kfree(producer_list);
-  kfree(consumer_list);
+  if (buffer != NULL) {
+    
+    kfree(buffer);
+    
+  }
+  
+  if (producer_list != NULL) {
+    
+    kfree(producer_list);
+  
+  }
+  
+  if (consumer_list != NULL) {
+    
+    kfree(consumer_list);
+  
+  }
   
   // Calculate total runtime
   seconds = 0; minutes = 0; hours = 0;
