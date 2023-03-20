@@ -32,6 +32,9 @@ struct task_struct *producer_thread = NULL;
 static ul_64 total_runtime = 0;
 static int consumer_count = 0;
 
+// Count the number of items produced
+static int producer_count = 0;
+
 // Producer thread
 static int producer_func(void *args) {
   struct task_struct *task;
@@ -46,15 +49,16 @@ static int producer_func(void *args) {
       // Wait on mutex (Acquire semaphore lock)
       down_interruptible(&mutex);
       
-      // Produce Item- add to buffer ****
-      
+      // Produce Item- add to buffer
+      buffer[full] = task;
+      printk("[%s] Produced Item#-%d at buffer index:%d for PID:%d\n",current->comm,producer_count,full,current->pid);
+      ++producer_count;
       
       // Signal mutex (Release semaphore lock)
       up(&mutex); 
       
       // Signal full (Release semaphore lock)
       up(&full);
-      
       
     }
     
