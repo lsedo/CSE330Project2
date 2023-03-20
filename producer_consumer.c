@@ -23,8 +23,6 @@ module_param(uuid, int, 0644);
 //Create required semaphores
 static struct semaphore mutex, full, empty;
 
-static int buffer_ix;
-
 // task_struct pointers
 struct task_struct **buffer = NULL;
 struct task_struct **consumer_list = NULL;
@@ -40,6 +38,7 @@ static int producer_count = 0;
 // Producer thread - finite loop
 static int producer_func(void *args) {
   struct task_struct *task;
+  int empty_ix;
   
   for_each_process(task) {
     
@@ -56,10 +55,17 @@ static int producer_func(void *args) {
       }
       
       // Produce Item- add to buffer
-      buffer[buffer_ix] = task;
-      printk("[%s] Produced Item#-%d at buffer index:%d for PID:%d\n",current->comm,producer_count,buffer_ix,current->pid);
-      ++producer_count;
-      ++buffer_ix;
+      empty_ix = 0;
+      
+      while(empty_ix < buffSize){
+            if(buffer[empty_ix] == NULL){
+                  buffer[empty_ix] = task;
+                  printk("[%s] Produced Item#-%d at buffer index:%d for PID:%d\n",current->comm,producer_count,buffer_ix,current->pid);
+                  ++producer_count;
+                  break;
+            }
+            ++empty_ix;
+      }
       
       // Signal mutex (Release semaphore lock)
       up(&mutex); 
