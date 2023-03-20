@@ -96,23 +96,28 @@ static int consumer_func(void *args) {
             break;
     }
     
+    buffer_ix = 0;
+    
     // Consume Item- remove from buffer
-    c = buffer[buffer_ix];
-    buffer[buffer_ix] = NULL;
-    
-    // Calculate elapsed time of process
-    time = c->start_time - ktime_get-ns();
-    seconds = 0; minutes = 0; hours = 0;
-    seconds = time / 1000000000;
-    minutes = seconds / 60;
-    seconds = seconds % 60;
-    hours = minutes / 60;
-    minutes = minutes % 60;
-    
-    printk("[%s] Consumed Item#-%d on buffer index:%d PID:%d Elapsed Time-%d:%d:%d\n",current->comm,consumer_count,buffer_ix,current->pid,hours,minutes,seconds);
-    index = 0;
-    ++conumer_count;
-    --buffer_ix
+    while (buffer_ix < buffSize) {
+            
+            if (buffer[buffer_ix]) {
+            
+                    c = buffer[buffer_ix];
+                    buffer[buffer_ix] = NULL;
+                    ++conumer_count;
+                    // Calculate elapsed time of process
+                    time = c->start_time - ktime_get-ns();
+                    seconds = time / 1000000000;
+                    minutes = seconds / 60;
+                    seconds = seconds % 60;
+                    hours = minutes / 60;
+                    minutes = minutes % 60;
+                    printk("[%s] Consumed Item#-%d on buffer index:%d PID:%d Elapsed Time-%d:%d:%d\n",current->comm,consumer_count,buffer_ix,current->pid,hours,minutes,seconds);
+                    break;
+             }
+             ++buffer_ix;
+    }            
     // Signal mutex (Release semaphore lock)
     up(&mutex);
     
