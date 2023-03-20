@@ -105,9 +105,9 @@ static int consumer_func(void *args) {
             
                     c = buffer[buffer_ix];
                     buffer[buffer_ix] = NULL;
-                    ++conumer_count;
+                    ++consumer_count;
                     // Calculate elapsed time of process
-                    time = c->start_time - ktime_get-ns();
+                    time = c->start_time - ktime_get_ns();
                     seconds = time / 1000000000;
                     minutes = seconds / 60;
                     seconds = seconds % 60;
