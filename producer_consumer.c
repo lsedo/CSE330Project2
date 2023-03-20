@@ -215,15 +215,29 @@ void producer_consumer_exit(void) {
   int count = 0;
   
   int i = 0;
-  for(i = 0; i < cons; ++i)
+  
+  for (i = 0; i < cons; ++i) {
+    
         up(&full);
-  for(i = 0; i < cons; ++i)
+  }
+  
+  for (i = 0; i < cons; ++i) {
+    
         kthread_stop(consumer_list[i]);
   
-  for(i = 0; i < prod; ++i)
+  }
+  
+  for (i = 0; i < prod; ++i) {
+    
         up(&empty);
-  for(i = 0; i < prod; ++i)
+  }
+  
+  
+  for (i = 0; i < prod; ++i) {
+    
         kthread_stop(producer_list[i]);
+  
+  }
   
   // Calculate total runtime
   seconds = 0; minutes = 0; hours = 0;
