@@ -60,7 +60,7 @@ static int producer_func(void *args) {
       while(empty_ix < buffSize){
             if(buffer[empty_ix] == NULL){
                   buffer[empty_ix] = task;
-                  printk("[%s] Produced Item#-%d at buffer index:%d for PID:%d\n",current->comm,producer_count,buffer_ix,current->pid);
+                  printk("[%s] Produced Item#-%d at buffer index:%d for PID:%d\n",current->comm,producer_count,empty_ix,current->pid);
                   ++producer_count;
                   break;
             }
@@ -121,7 +121,7 @@ static int consumer_func(void *args) {
                     hours = minutes / 60;
                     minutes = minutes % 60;
               // print out total time in given format
-                    printk("[%s] Consumed Item#-%d on buffer index:%d PID:%d Elapsed Time-%d:%d:%d\n",current->comm,consumer_count,buffer_ix,current->pid,hours,minutes,seconds);
+                    printk("[%s] Consumed Item#-%d on buffer index:%d PID:%d Elapsed Time-%d:%d:%d\n",current->comm,consumer_count,buffer_ix,current->pid,(int)hours,(int)minutes,(int)seconds);
                     break;
              }
              ++buffer_ix;
@@ -144,7 +144,6 @@ int producer_consumer_init(void) {
 
   // Counter variable
   int i = 0;
-  buffer_ix = 0;
   
   // Parameter validation
   if ((prod != 0 && prod != 1) || cons < 0 || buffSize < 1) {
@@ -152,7 +151,6 @@ int producer_consumer_init(void) {
     return -1;
 
   }
-  
   
   // Initialize semaphores
   sema_init(&empty,buffSize);
