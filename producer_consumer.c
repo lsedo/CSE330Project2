@@ -26,7 +26,7 @@ static struct semaphore mutex, full, empty;
 // task_struct pointers
 struct task_struct **buffer = NULL;
 struct task_struct **consumer_list = NULL;
-struct task_struct *producer_thread = NULL;
+struct task_struct **producer_list = NULL;
 
 // Timer and counter to measure the consumer time
 static ul_64 total_runtime = 0;
@@ -88,7 +88,7 @@ static int consumer_func(void *args) {
   // Variables for the thread
   struct task_struct *c = NULL;
   int buffer_ix = 0;
-  ul_64 time = 0, seconds = 0, minutes = 0, hours = 0;
+  ul_64 elapsed_time = 0, seconds = 0, minutes = 0, hours = 0;
   
   
   while(!kthread_should_stop()) {
@@ -114,8 +114,9 @@ static int consumer_func(void *args) {
                     buffer[buffer_ix] = NULL;
                     ++consumer_count;
                     // Calculate elapsed time of process
-                    time = c->start_time - ktime_get_ns();
-                    seconds = time / 1000000000;
+                    elapsed_time = c->start_time - ktime_get_ns();
+                    total_runtime += elapsed_time;
+                    seconds = elapsed_time / 1000000000;
                     minutes = seconds / 60;
                     seconds = seconds % 60;
                     hours = minutes / 60;
@@ -180,9 +181,14 @@ int producer_consumer_init(void) {
   
   
   // The producer_thread will be only created if prod = 1
-  if (prod == 1) {
+  if (prod > 0) {
+          i = 0;
+          producer_list = (struct task_struct**)kmalloc(sizeof(struct task_struct*) * prod, GFP_KERNEL);
     
-          producer_thread = kthread_run(producer_func, NULL, "producer_thread");
+          while(i < prod){
+                producer_list[i] = kthread_run(producer_func, NULL, "producer_thread");
+                ++i;
+          }
     
   }
   
@@ -208,15 +214,26 @@ void producer_consumer_exit(void) {
   ul_64 seconds = 0, minutes = 0, hours = 0;
   int count = 0;
   
+  int i = 0;
+  for(i = 0; i < cons; ++i)
+        up(&full);
+  for(i = 0; i < cons; ++i)
+        kthread_stop(consumer_list[i]);
+  
+  for(i = 0; i < prod; ++i)
+        up(&empty);
+  for(i = 0; i < prod; ++i)
+        kthread_stop(producer_list[i]);
+  
   // Calculate total runtime
-  /*
   seconds = 0; minutes = 0; hours = 0;
   seconds = total_runtime / 1000000000;
   minutes = seconds / 60;
   seconds = seconds % 60;
   hours = minutes / 60;
   minutes = minutes % 60;
-  */
+  
+  printk("The total elapsed time of all processes for UID %d is \t%d:%d:%d\n",uuid,hours,minutes,seconds);
   
 }
 
