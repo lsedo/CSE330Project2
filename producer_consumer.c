@@ -38,7 +38,7 @@ static int producer_count = 0;
 // Producer thread - finite loop
 static int producer_func(void *args) {
   struct task_struct *task;
-  int empty_ix;
+  int empty_ix = 0;
   
   for_each_process(task) {
     
