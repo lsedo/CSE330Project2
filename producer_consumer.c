@@ -81,7 +81,7 @@ static int consumer_func(void *args) {
   
   // Variables for the thread
   struct task_struct *c = NULL;
-  int index = 0;
+  int buffer_ix = 0;
   ul_64 time = 0, seconds = 0, minutes = 0, hours = 0;
   
   
