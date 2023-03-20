@@ -44,10 +44,14 @@ static int producer_func(void *args) {
     if(task->cred->uid.val == uuid) {
       
       // Wait on empty (Acquire semaphore lock)
-      down_interruptible(&empty);
+      if (down_interruptible(&empty)) {
+              break;     
+      }
       
       // Wait on mutex (Acquire semaphore lock)
-      down_interruptible(&mutex);
+      if (down_interruptible(&mutex)) {
+              break;
+      }
       
       // Produce Item- add to buffer
       buffer[full] = task;
@@ -72,16 +76,26 @@ static int producer_func(void *args) {
 // Consumer thread
 static int consumer_func(void *args) {
   
+  // Variables for the thread
+  struct task_struct *c = NULL;
+  int index = 0;
+  ul_64 time = 0, seconds = 0, minutes = 0, hours = 0;
+  
+  
   while(!kthread_should_stop()) {
     
     // Wait on full (Acquire semaphore lock)
-    down_interruptible(&full);
+    if (down_interruptible(&full)) {
+            break;
+    }
     
     // Wait on mutex (Acquire semaphore lock)
-    down_interruptible(&mutex);
+    if (down_interruptible(&mutex)) {
+            break;
+    }
     
     // Consume Item- remove from buffer and calculate time ****
-    
+    index = 0;
     
     // Signal mutex (Release semaphore lock)
     up(&mutex);
