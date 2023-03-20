@@ -216,6 +216,9 @@ void producer_consumer_exit(void) {
   
   int i = 0;
   
+  //  signal the semaphores for each thread to make sure they are not waiting on the semaphore
+  // for loop signals the semaphore once for each thread
+  
   for (i = 0; i < cons; ++i) {
     
         up(&full);
