@@ -8,7 +8,5 @@ Sarva Gupta - 1221476308
 
 
 Link to Video:
-
-
-
-// reminder: write the type of buffer structure in this README or mention it in the video
+https://asu.zoom.us/rec/share/mII0oG8_-qJSfu5ux4MjBJhH9gJTLIo6KUDSvxUZUI_q5BL0Sxja8ahjJaIBYR4b.2F9yysJWW_89rjaG?startTime=1679372775000
+Passcode: 5K#TXQL%
